@@ -1,9 +1,9 @@
 //
-//  WikiViewController.swift
+//  StarWarsCharacterViewController.swift
 //  StarWarsSwift
 //
-//  Created by Pawel Walicki on 10/5/15.
-//  Copyright (c) 2015 Pawel Walicki. All rights reserved.
+//  Created by Ivan on 12/05/15.
+//  Copyright (c) 2015 Ivan. All rights reserved.
 //
 
 import UIKit
@@ -12,37 +12,34 @@ class WikiViewController: UIViewController, UIWebViewDelegate{
 
     var model : StarWarsCharacter
 
-    @IBOutlet weak var pdfView: UIWebView!
+    @IBOutlet weak var browser: UIWebView!
     @IBOutlet weak var activityView: UIActivityIndicatorView!
     
-    init(model : StarWarsCharacter){
+    init (model: StarWarsCharacter)
+    {
+        self.model=model
         
-        self.model = model
-        
-        super.init(nibName: nil, bundle: nil)
-        
-        self.title = model.name as String
-        
-    }
-    
+        super.init(nibName: "WikiViewController", bundle: nil)
 
-    
-    override func loadView() {
-        NSBundle.mainBundle().loadNibNamed("WikiViewController", owner: self, options: nil)
+        
+        self.title = model.name
     }
-    
+
     required init(coder aDecoder: NSCoder) {
-        fatalError("NSCoding not supported")
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
+    
+    
+  
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        pdfView.delegate = self
+        browser.delegate = self
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "tableSelectChange:", name: "didSelectChange", object: nil)
         
-        syncViewMode()
+        syncViewWithModel()
         
         
     }
@@ -58,34 +55,35 @@ class WikiViewController: UIViewController, UIWebViewDelegate{
         
         let userInfo:Dictionary<String,StarWarsCharacter!> = notification.userInfo as! Dictionary<String,StarWarsCharacter!>
         
-        self.model = userInfo["character"]!
+        self.model = userInfo["STAR_WARS_CHARACTER"]!
         
-        syncViewMode()
+        syncViewWithModel()
         
     }
 
-    func syncViewMode()->(){
+    func syncViewWithModel()->(){
         
-        self.title = self.model.name as String
+        self.title = self.model.name
         
-        if let value = self.model.url{
-            let requestObj = NSURLRequest(URL: self.model.url!);
+        if let valorWikiURL = self.model.wikiURL
+        {
+            let requestObj = NSURLRequest(URL: valorWikiURL);
             
-            self.pdfView.loadRequest(requestObj)
+            self.browser.loadRequest(requestObj)
     
         }
 
     }
     
-    func webViewDidStartLoad(webView: UIWebView) {
-        println("start")
+    func webViewDidStartLoad(webView: UIWebView)
+    {
         self.activityView.hidden = false
         self.activityView.startAnimating()
         
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
-        println("stop")
+    func webViewDidFinishLoad(webView: UIWebView)
+    {
         self.activityView.hidden = true
         self.activityView.stopAnimating()
         

@@ -8,7 +8,24 @@
 
 import UIKit
 
+
+// Creación del protocolo para el delegado
+
+protocol UniverseTableViewControllerDelegate {
+    func didselectChange(universeVC: UniverseTableViewController, selectedCharacter : StarWarsCharacter)
+}
+
+
 class UniverseTableViewController: UITableViewController {
+    
+    // Declaro el delegado
+    
+    var delegate : UniverseTableViewControllerDelegate?
+    
+    
+    
+    //Declaro el modelo general
+    var model = StarWarsUniverse();
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,24 +47,99 @@ class UniverseTableViewController: UITableViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
-        return 0
+        return 2
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return 0
+        if (section == 0)
+        {
+            return model.imperialsCount()
+        }
+       else
+        {
+            return model.rebelsCount()
+        }
     }
 
-    /*
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if (section == 0)
+        {
+            return "Imperials"
+        }
+        else
+        {
+            return "Rebels"
+        }
+
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath) as! UITableViewCell
+        
+        var swCharacter: StarWarsCharacter
+        //Averiguamos el personaje
+        if indexPath.section == 0
+        {
+            swCharacter = model.imperialAtIndex(indexPath.row)
+        }
+        else
+        {
+            swCharacter = model.rebelAtIndex(indexPath.row)
 
+        }
+
+        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: nil)
         // Configure the cell...
-
+        
+        
+        
+            cell.imageView?.image = swCharacter.photo
+            cell.textLabel?.text = swCharacter.alias
+            cell.detailTextLabel?.text=swCharacter.name
+        
         return cell
     }
-    */
+    
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        //averiguamos el modelo seleccionado
+        
+        var selectedCharacter = characterAtIndexPath(indexPath)
+        
+        
+        
+        
+        //avisar al delegado
+        
+        self.delegate?.didselectChange(self, selectedCharacter: selectedCharacter)
+        
+        
+        //mandamos notificacion
+        let notification : NSNotificationCenter = NSNotificationCenter.defaultCenter()
+        
+        var userInfo = ["STAR_WARS_CHARACTER" : selectedCharacter]
+        
+        notification.postNotificationName("didSelectChange", object: self, userInfo: userInfo)
+        
+    }
+    
+    func characterAtIndexPath(indexpath : NSIndexPath)->StarWarsCharacter{
+        
+        var selectedCharacter : StarWarsCharacter
+        
+        if indexpath.section == 0{
+            
+            selectedCharacter = self.model.imperialAtIndex(indexpath.row)
+            
+        }else{
+            
+            selectedCharacter = self.model.rebelAtIndex(indexpath.row)
+        }
+        return selectedCharacter
+    }
+
 
     /*
     // Override to support conditional editing of the table view.
@@ -94,4 +186,15 @@ class UniverseTableViewController: UITableViewController {
     }
     */
     
+    // MARK: - UniverseTableViewControllerDelegate
+
+    func didselectChange(universeVC: UniverseTableViewController, swCharacter: StarWarsCharacter) {
+        
+        var characterVC : StarWarsCharacterViewController = StarWarsCharacterViewController(model: swCharacter)
+        
+        self.navigationController?.pushViewController(characterVC, animated: true)
+        
+        
+    }
+
 }
