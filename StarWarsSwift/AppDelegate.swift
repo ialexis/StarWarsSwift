@@ -23,15 +23,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //valor por defecto para ultimo personaje seleccionado
         var swCharacter : StarWarsCharacter
         
-        /*
+        
         let defaults = NSUserDefaults.standardUserDefaults()
-        if let last_selected_character = defaults.stringForKey("LAST_SELECTED_CHARACTER")
+        if let section : Int = defaults.objectForKey("LAST_SELECTED_CHARACTER_SECTION") as? Int, pos : Int = defaults.objectForKey("LAST_SELECTED_CHARACTER_POSITION") as? Int
         {
-           
-            /*
-            let section = last_selected_character.objectAtIndex(0) as! Int
-            let pos = last_selected_character.objectAtIndex(1) as! Int
+          //  println(last_selected_character)
             
+        
             if section == 0
             {
                 swCharacter = universe.imperialAtIndex(pos)
@@ -40,18 +38,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             {
                 swCharacter = universe.rebelAtIndex(pos)
             }
-            */
+            
         }
         else
         {
-            defaults.setObject([0:0], forKey: "LAST_SELECTED_CHARACTER")
+
+            defaults.setObject(0, forKey: "LAST_SELECTED_CHARACTER_SECTION")
+            defaults.setObject(0, forKey: "LAST_SELECTED_CHARACTER_POSITION")
+
             defaults.synchronize()
             
             swCharacter = universe.imperialAtIndex(0)
         }
         
         //saco las coordenadas del ultimo personaje
-        */
+        
         
        
         
@@ -73,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
            charVC = StarWarsCharacterViewController(model: universe.imperialAtIndex(0))
         }
         */
-         charVC = StarWarsCharacterViewController(model: universe.imperialAtIndex(0))
+         charVC = StarWarsCharacterViewController(model: swCharacter)
         
         //creamos los Navigation Controllers
         

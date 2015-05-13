@@ -31,8 +31,6 @@ class StarWarsCharacterViewController: UIViewController, UniverseTableViewContro
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        //   NSNotificationCenter.defaultCenter().addObserver(self, selector: "tableSelectChange:", name: "didSelectChange", object: nil)
-        
         self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
         
         syncViewAndModel()

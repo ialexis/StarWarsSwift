@@ -108,7 +108,16 @@ class UniverseTableViewController: UITableViewController {
         
         var selectedCharacter = characterAtIndexPath(indexPath)
         
+        //lo guardamos como ultimo personaje seleccionado
         
+        var defaults : NSUserDefaults = NSUserDefaults.standardUserDefaults()
+
+        
+        defaults.setObject(indexPath.section, forKey: "LAST_SELECTED_CHARACTER_SECTION")
+        defaults.setObject(indexPath.row, forKey: "LAST_SELECTED_CHARACTER_POSITION")
+        
+        defaults.synchronize()
+
         
         
         //avisar al delegado

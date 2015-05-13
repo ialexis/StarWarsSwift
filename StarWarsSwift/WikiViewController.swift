@@ -18,10 +18,7 @@ class WikiViewController: UIViewController, UIWebViewDelegate{
     init (model: StarWarsCharacter)
     {
         self.model=model
-        
         super.init(nibName: "WikiViewController", bundle: nil)
-
-        
         self.title = model.name
     }
 
@@ -37,7 +34,7 @@ class WikiViewController: UIViewController, UIWebViewDelegate{
         
         browser.delegate = self
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "tableSelectChange:", name: "didSelectChange", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notifyStarWarsCharacterDidChange:", name: "didSelectChange", object: nil)
         
         syncViewWithModel()
         
@@ -51,17 +48,23 @@ class WikiViewController: UIViewController, UIWebViewDelegate{
         
     }
     
-    func tableSelectChange(notification: NSNotification) {
+    //MARK: - Notifications
+    
+    func notifyStarWarsCharacterDidChange(notification: NSNotification)
+    {
+    
         
-        let userInfo:Dictionary<String,StarWarsCharacter!> = notification.userInfo as! Dictionary<String,StarWarsCharacter!>
+        let userInfo: NSDictionary = notification.userInfo!
         
-        self.model = userInfo["STAR_WARS_CHARACTER"]!
+        self.model = userInfo["STAR_WARS_CHARACTER"]! as! StarWarsCharacter
         
         syncViewWithModel()
         
     }
-
-    func syncViewWithModel()->(){
+    
+    //MARK: - Utils
+    func syncViewWithModel()
+    {
         
         self.title = self.model.name
         
@@ -74,6 +77,8 @@ class WikiViewController: UIViewController, UIWebViewDelegate{
         }
 
     }
+    
+    //MARK: - UIWebViewDelegate
     
     func webViewDidStartLoad(webView: UIWebView)
     {
